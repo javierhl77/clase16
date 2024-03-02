@@ -2,8 +2,14 @@
 //1)aggregation 
 //2)paginacion 
 
+
+const express = require("express");
+const app = express();
+const exphbs = require("express-handlebars");
+PUERTO = 8080
 const mongoose = require("mongoose");
 const OrderModel = require("./models/order.js");
+//lo saque de chat gpt: para modificar el tiempo de coneccion pero sigue igual
 //const dbURI = "mongodb+srv://javier1977:coderhouse@cluster0.mryvwa7.mongodb.net/pizzas?retryWrites=true&w=majority&appName=Cluster0";
 //const options = {
 //  useNewUrlParser: true,
@@ -12,9 +18,20 @@ const OrderModel = require("./models/order.js");
 //  socketTimeoutMS: 45000 // Tiempo de espera para las operaciones de socket
 //};
 
+//middlewares:
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+//handlebars;
+app.engine("handlebars", exphbs.engine());
+app.set("view engine", "handlebars");
+app.set("views", "./src/views");
+
+
+
+
 const main =  async () => {
     mongoose.connect("mongodb+srv://javier1977:coderhouse@cluster0.mryvwa7.mongodb.net/pizzas?retryWrites=true&w=majority&appName=Cluster0" )
-    //mongoose.connect(dbURI, options)
+   // mongoose.connect(dbURI, options)
     .then(() => console.log('Conexión exitosa a la base de datos'))
     .catch(err => console.error('Error al conectar a la base de datos:', err));
     
@@ -76,11 +93,15 @@ const main =  async () => {
  //])
 
  //
-const resultado = await OrderModel.paginate({"tam": "familiar"}, {limit: 2, page: 2});
+const resultado = await OrderModel.paginate({"tam": "familiar"}, {limit: 2, page: 1});
 console.log(resultado);
 
 
+//rutas:
 
+app.get("/", (req,res) => {
+    res.send("funciona")
+})
 
 
 };
